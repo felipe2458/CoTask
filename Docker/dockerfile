@@ -1,0 +1,23 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV NODE_ENV=development
+
+RUN apt-get update && apt-get install -y curl wget git build-essential bash && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+RUN npm install --save-dev typescript@^5 @types/node@^20
+
+COPY . .
+
+RUN npx tsc --skipLibCheck
+
+EXPOSE 3333
+
+CMD ["bash"]

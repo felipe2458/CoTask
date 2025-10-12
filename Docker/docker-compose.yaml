@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Docker/dockerfile
+    container_name: adonis_app
+    restart: unless-stopped
+    ports:
+      - "3333:3333"
+    volumes:
+      - ..:/app:cached
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: adonis
+      DB_PASSWORD: adonis
+      DB_NAME: adonis_db
+    depends_on:
+      - db
+    command: "npm run dev"
+
+  db:
+    image: postgres:15
+    container_name: adonis_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: adonis
+      POSTGRES_PASSWORD: adonis
+      POSTGRES_DB: adonis_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
