@@ -12,6 +12,7 @@
     "rootDir": "./",
     "baseUrl": "./",
     "sourceMap": true,
+    "skipLibCheck": true,
     "paths": {
       "App/*": [
         "./app/*"
@@ -29,7 +30,8 @@
     "types": [
       "@adonisjs/core",
       "@adonisjs/repl",
-      "@japa/preset-adonis/build/adonis-typings"
+      "@japa/preset-adonis/build/adonis-typings",
+      "@adonisjs/lucid"
     ]
   }
 }
