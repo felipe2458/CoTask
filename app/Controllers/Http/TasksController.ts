@@ -1,15 +1,21 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Task from 'App/Models/Task'
+import Task, { Status } from 'App/Models/Task'
 
 export default class TasksController {
   public async store({request, response}: HttpContextContract) {
-    const { title, description } = request.only(['title', 'description']);
-    if(!title || !description) return response.status(400).json({ message: 'Title and description are required' });
+    const { title, description, due_data } = request.only(['title', 'description', 'due_data']);
+    if(!title || !description || !due_data) return response.status(400).json({ message: 'Missing required fields' });
 
     const taskDB = await Task.query().where('user_id', request["user"].id).whereRaw('LOWER(title) = ?', [title.toLowerCase()]).first();
     if(taskDB) return response.status(400).json({ message: 'Task already exists', taskDB });
 
-    const task = await Task.create({ title, description, user_id: request["user"].id })
+    const task = await Task.create({
+      title,
+      description,
+      due_data,
+      status: Status.PENDENTE,
+      user_id: request["user"].id
+   });
 
     return response.status(201).json(task)
   }
