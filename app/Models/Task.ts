@@ -27,6 +27,9 @@ export default class Task extends BaseModel {
   @column()
   public user_id: number
 
+  @column.dateTime({ autoCreate: true })
+  public createdAt: DateTime
+
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 }

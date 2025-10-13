@@ -16,6 +16,7 @@ export default class Tasks extends BaseSchema {
         .inTable('users')
         .onDelete('CASCADE')
         .notNullable()
+      table.timestamp('created_at', { useTz: true })
     })
   }
 

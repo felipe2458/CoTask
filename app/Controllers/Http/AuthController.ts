@@ -3,6 +3,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import jwt from 'jsonwebtoken'
 import Env from '@ioc:Adonis/Core/Env'
+import RevokedToken from 'App/Models/RevokedToken'
 
 export default class AuthController {
   public async login({request, response}: HttpContextContract) {
@@ -19,9 +20,14 @@ export default class AuthController {
 
     const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: '24h' });
 
-    return {
-      user,
-      token
-    }
+    return response.status(200).json({ user, token });
+  }
+
+  public async logout({request, response}: HttpContextContract) {
+    const token = request.header('Authorization')?.replace('Bearer ', '');
+
+    if(token) await RevokedToken.create({ token });
+
+    return response.status(200).json({ message: 'Logged out successfully' });
   }
 }
