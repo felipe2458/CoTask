@@ -13,4 +13,10 @@ export default class TasksController {
 
     return response.status(201).json(task)
   }
+
+  public async index({request, response}: HttpContextContract) {
+    const tasks = await Task.query().where('user_id', request["user"].id).orderBy('created_at', 'desc');
+
+    return response.status(200).json({ tasks });
+  }
 }
