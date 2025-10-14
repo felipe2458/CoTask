@@ -25,4 +25,14 @@ export default class TasksController {
 
     return response.status(200).json({ tasks });
   }
+
+  public async getTaskInfo({request, response, params}: HttpContextContract) {
+    const taskId = params.id;
+    const user = request["user"];
+
+    const task = await Task.query().where('id', taskId).where('user_id', user.id).first();
+    if(!task) return response.status(404).json({ message: 'Task not found' });
+
+    return response.status(200).json({ task });
+  }
 }

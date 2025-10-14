@@ -10,4 +10,6 @@ Route.group(() => {
   Route.resource('/tasks', 'TasksController')
     .only(['index', 'store', 'update', 'destroy'])
     .middleware({ '*': 'auth' })
+
+  Route.get('/tasks/:id', 'TasksController.getTaskInfo').middleware('auth')
 }).prefix('api')
