@@ -26,6 +26,28 @@ export default class TasksController {
     return response.status(200).json({ tasks });
   }
 
+  public async update({request, response, params}: HttpContextContract) {
+    const taskId = params.id;
+    const user = request["user"];
+    const { title, description, due_data, status } = request.only(['title', 'description', 'due_data', 'status']);
+
+    const task = await Task.query().where('id', taskId).where('user_id', user.id).first();
+    if(!task) return response.status(404).json({ message: 'Task not found' });
+
+    if(title){
+      const taskTitleExists = await Task.query().where('user_id', user.id).whereRaw('LOWER(title) = ?', [title.toLowerCase()]).first();
+      if(taskTitleExists) return response.status(400).json({ message: 'Task already exists', taskTitleExists });
+    }
+
+    if(description) task.description = description;
+    if(due_data) task.due_data = due_data;
+    if(status) task.status = status;
+
+    await task.save();
+
+    return response.status(200).json({ message: 'Task updated successfully' });
+  }
+
   public async getTaskInfo({request, response, params}: HttpContextContract) {
     const taskId = params.id;
     const user = request["user"];
