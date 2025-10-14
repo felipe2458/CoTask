@@ -18,6 +18,9 @@ export default class AuthController {
 
     const SECRET = Env.get('SECRET', '24h');
 
+    const oldToken = request.header('Authorization')?.replace('Bearer ', '');
+    if(oldToken) await RevokedToken.create({ token: oldToken });
+
     const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: '24h' });
 
     return response.status(200).json({ user, token });
