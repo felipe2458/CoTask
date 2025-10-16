@@ -37,6 +37,7 @@ export default class TasksController {
     if(title){
       const taskTitleExists = await Task.query().where('user_id', user.id).whereRaw('LOWER(title) = ?', [title.toLowerCase()]).first();
       if(taskTitleExists) return response.status(400).json({ message: 'Task already exists', taskTitleExists });
+      task.title = title;
     }
 
     if(description) task.description = description;
