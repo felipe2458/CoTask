@@ -12,4 +12,6 @@ Route.group(() => {
     .middleware({ '*': 'auth' })
 
   Route.get('/tasks/:id', 'TasksController.getTaskInfo').middleware('auth')
+
+  Route.post('/tasks/:id/share', 'TasksController.share').middleware('auth')
 }).prefix('api')

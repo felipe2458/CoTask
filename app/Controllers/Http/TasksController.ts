@@ -1,5 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Task, { Status } from 'App/Models/Task'
+import TaskShare from 'App/Models/TaskShare';
+import User from 'App/Models/User';
 
 export default class TasksController {
   public async store({request, response}: HttpContextContract) {
@@ -69,5 +71,28 @@ export default class TasksController {
     if(!task) return response.status(404).json({ message: 'Task not found' });
 
     return response.status(200).json({ task });
+  }
+
+  public async share({request, response, params}: HttpContextContract) {
+    const taskId = params.id;
+    const { to_user, permission } = request.only(['to_user', 'permission']);
+    if(!to_user || !permission) return response.status(400).json({ message: 'Missing required fields' });
+
+    const toUserDB = await User.query().where('id', to_user).first();
+    if(!toUserDB) return response.status(404).json({ message: 'User not found' });
+
+    const taskDBExists = await Task.query().where('id', taskId).first();
+    if(!taskDBExists) return response.status(404).json({ message: 'Task not found' });
+
+    const taskShareDb = await TaskShare.query().where('task_id', taskId).where('user_id', to_user).first();
+    if(taskShareDb) return response.status(400).json({ message: 'Task already shared' });
+
+    await TaskShare.create({
+      task_id: taskId,
+      user_id: to_user,
+      permission
+    });
+
+    return response.status(200).json({ message: 'Task shared successfully' });
   }
 }
