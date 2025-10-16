@@ -82,6 +82,22 @@ export default class TasksController {
     return response.status(200).json({ task });
   }
 
+  public async findTask({request, response}: HttpContextContract) {
+    const find = request.qs().find;
+    if(!find) return response.status(400).json({ message: 'Missing required fields' });
+
+    const allTasks = await Task.query().where('user_id', request["user"].id).orderBy('created_at', 'desc');
+
+    const findLower = find.toLowerCase()
+    const tasksFiltered = allTasks.filter(task =>
+      task.title.toLowerCase().includes(findLower) ||
+      task.description.toLowerCase().includes(findLower) ||
+      task.status.toLowerCase().includes(findLower)
+    )
+
+    return response.status(200).json({ tasksFiltered });
+  }
+
   public async share({request, response, params}: HttpContextContract) {
     const taskId = params.id;
     const { to_user, permission } = request.only(['to_user', 'permission']);

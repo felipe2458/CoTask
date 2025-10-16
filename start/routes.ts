@@ -11,6 +11,7 @@ Route.group(() => {
     .only(['index', 'store', 'update', 'destroy'])
     .middleware({ '*': 'auth' })
 
+  Route.get('/tasks/find', 'TasksController.findTask').middleware('auth')
   Route.get('/tasks/:id', 'TasksController.getTaskInfo').middleware('auth')
 
   Route.post('/tasks/:id/share', 'TasksController.share').middleware('auth')
