@@ -49,6 +49,18 @@ export default class TasksController {
     return response.status(200).json({ message: 'Task updated successfully' });
   }
 
+  public async destroy({request, response, params}: HttpContextContract) {
+    const taskId = params.id;
+    const user = request["user"];
+
+    const task = await Task.query().where('id', taskId).where('user_id', user.id).first();
+    if(!task) return response.status(404).json({ message: 'Task not found' });
+
+    await task.delete();
+
+    return response.status(200).json({ message: 'Task deleted successfully' });
+  }
+
   public async getTaskInfo({request, response, params}: HttpContextContract) {
     const taskId = params.id;
     const user = request["user"];
