@@ -95,4 +95,20 @@ export default class TasksController {
 
     return response.status(200).json({ message: 'Task shared successfully' });
   }
+
+  public async sharedTasks({request, response}: HttpContextContract) {
+    const userAuth = request["user"];
+
+    const tasksShared = await TaskShare.query().where('user_id', userAuth.id);
+    if(tasksShared.length === 0) return response.status(404).json({ message: 'You have no shared tasks' });
+
+    let tasksFormatted: Task[] = [];
+
+    for(const task of tasksShared) {
+      const taskDB = await Task.query().where('id', task.task_id).first();
+      if(taskDB) tasksFormatted.push(taskDB);
+    }
+
+    return response.status(200).json({ tasksFormatted });
+  }
 }

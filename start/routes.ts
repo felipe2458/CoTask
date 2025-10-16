@@ -14,4 +14,5 @@ Route.group(() => {
   Route.get('/tasks/:id', 'TasksController.getTaskInfo').middleware('auth')
 
   Route.post('/tasks/:id/share', 'TasksController.share').middleware('auth')
+  Route.get('/shared-tasks', 'TasksController.sharedTasks').middleware('auth')
 }).prefix('api')
