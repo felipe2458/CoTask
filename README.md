@@ -6,42 +6,103 @@ O foco é construir uma API completa com autenticação, validações e controle
 
 ---
 
+## ⚙️ Pré-requisitos
+- Docker  
+- Docker Compose  
+
+> Certifique-se de que ambos estão instalados e funcionando em sua máquina.
+
+---
+
+## 🚀 Instalação e execução com Docker
+
+1. Clone o repositório:  
+```bash
+git clone git@github.com:felipe2458/CoTask.git  
+
+cd CoTask
+```
+
+2. Construa e inicie os containers:
+```bash
+docker compose up --build -d
+```
+
+3. Verifique se os containers estão rodando:  
+```bash
+docker compose ps
+```
+
+4. A aplicação AdonisJS estará disponível em:  
+```bash
+http://localhost:3333
+```
+
+---
+
+## 🛠️ Comandos dentro do container
+
+Para executar comandos dentro do container da aplicação:  
+```bash
+docker compose exec app bash
+```
+
+Exemplos de comandos:  
+```bash
+npm run dev                 # iniciar o servidor em modo desenvolvimento  
+node ace migration:run      # executar migrations do banco
+```
+
+---
+
+## 🗄️ Banco de dados
+
+O projeto utiliza **SQLite**. O arquivo do banco de dados é `db.sqlite3` e será criado automaticamente na raiz do projeto pelo AdonisJS.  
+Não é necessário instalar ou configurar nenhum servidor de banco externo.
+
+Todas as migrations podem ser executadas dentro do container com:  
+```bash
+docker compose exec app node ace migration:run
+```
+
+---
+
 ## 🚀 Funcionalidades Obrigatórias
 
 ### 👤 Autenticação
-- Registro de usuários (`name`, `email`, `password`)
-- Login e logout (usando **JWT** ou sessions)
+- Registro de usuários (`name`, `email`, `password`)  
+- Login e logout (usando **JWT** ou sessions)  
 - Proteção de rotas autenticadas com middleware
 
 ### ✅ Gerenciamento de Tarefas
 - CRUD completo:
-  - Criar tarefa (`title`, `description`, `due_date`, `status`)
-  - Listar tarefas do usuário autenticado
-  - Atualizar tarefa (somente se for dono ou tiver permissão)
-  - Deletar tarefa
+  - Criar tarefa (`title`, `description`, `due_date`, `status`)  
+  - Listar tarefas do usuário autenticado  
+  - Atualizar tarefa (somente se for dono ou tiver permissão)  
+  - Deletar tarefa  
 - Status possíveis: `pendente`, `em_andamento`, `concluida`
 
 ### 🤝 Compartilhamento de Tarefas
-- Dono pode compartilhar tarefa com outro usuário
-- Permissões: `read` ou `edit`
+- Dono pode compartilhar tarefa com outro usuário  
+- Permissões: `read` ou `edit`  
 - Usuário convidado pode visualizar (e editar se tiver permissão)
 
 ### 🔍 Filtros e Buscas
-- Filtrar tarefas por status
+- Filtrar tarefas por status  
 - Buscar por título ou descrição
 
 ### 🧱 Validações
-- `title`: obrigatório
-- `due_date`: não pode ser no passado
-- `status`: deve ser um dos valores válidos
+- `title`: obrigatório  
+- `due_date`: não pode ser no passado  
+- `status`: deve ser um dos valores válidos  
 - Todos os campos devem ser validados via **Validators** do AdonisJS
 
 ---
 
 ## 🌟 Funcionalidades Opcionais (Extras)
-- Upload de arquivos anexos às tarefas
-- Notificação por e-mail ao compartilhar tarefa
-- Paginação de resultados
+- Upload de arquivos anexos às tarefas  
+- Notificação por e-mail ao compartilhar tarefa  
+- Paginação de resultados  
 - Atualizações em tempo real com **WebSockets**
 
 ---
@@ -76,14 +137,6 @@ O foco é construir uma API completa com autenticação, validações e controle
 
 ---
 
-## ⚙️ Requisitos Técnicos
-- **Node.js** v18+  
-- **AdonisJS** v6+  
-- Banco de dados: **SQLite**, **MySQL** ou **PostgreSQL**
-- Ferramenta para testes: **Insomnia** ou **Postman**
-
----
-
 ## 🧩 Endpoints Principais (Exemplo)
 
 ### Usuários
@@ -111,11 +164,11 @@ O foco é construir uma API completa com autenticação, validações e controle
 ---
 
 ## 🧠 Conceitos Envolvidos
-- RESTful API
-- Autenticação JWT
-- Validação de dados com Validators
-- Relacionamentos com Lucid ORM
-- Middleware de autenticação
+- RESTful API  
+- Autenticação JWT  
+- Validação de dados com Validators  
+- Relacionamentos com Lucid ORM  
+- Middleware de autenticação  
 - Estrutura MVC do AdonisJS
 
 ---
@@ -129,3 +182,4 @@ O foco é construir uma API completa com autenticação, validações e controle
   "due_date": "2025-10-20",
   "status": "pendente"
 }
+```
