@@ -1,6 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Task, { Status } from 'App/Models/Task'
-import TaskShare from 'App/Models/TaskShare';
+import TaskShare, { Permission } from 'App/Models/TaskShare';
 import User from 'App/Models/User';
 
 export default class TasksController {
@@ -33,11 +33,20 @@ export default class TasksController {
     const user = request["user"];
     const { title, description, due_data, status } = request.only(['title', 'description', 'due_data', 'status']);
 
-    const task = await Task.query().where('id', taskId).where('user_id', user.id).first();
+    const task = await Task.query().where('id', taskId).first();
     if(!task) return response.status(404).json({ message: 'Task not found' });
 
+    const userIsOwner = task.user_id === user.id;
+
+    if(!userIsOwner){
+      const taskShared = await TaskShare.query().where('task_id', taskId).where('user_id', user.id).first();
+      if(!taskShared) return response.status(401).json({ message: 'This task not shared with you' });
+
+      if(taskShared.permission !== Permission.EDIT) return response.status(401).json({ message: 'You do not have permission to edit this task' });
+    }
+
     if(title){
-      const taskTitleExists = await Task.query().where('user_id', user.id).whereRaw('LOWER(title) = ?', [title.toLowerCase()]).first();
+      const taskTitleExists = await Task.query().whereRaw('LOWER(title) = ?', [title.toLowerCase()]).first();
       if(taskTitleExists) return response.status(400).json({ message: 'Task already exists', taskTitleExists });
       task.title = title;
     }
